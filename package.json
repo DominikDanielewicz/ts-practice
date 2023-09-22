@@ -7,8 +7,5 @@
     "compile": "tsc --watch"
   },
   "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "typescript": "^5.2.2"
-  }
+  "license": "ISC"
 }
