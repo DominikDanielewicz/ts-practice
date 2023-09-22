@@ -11,6 +11,9 @@ Core Types:
 -boolean
 -object
 -Array
+-function
+-undefined
+-null
 
 
 
@@ -22,7 +25,10 @@ Added by TypeScript:
 -literar - allows to choose the specific values which we want to use. Often used with union type
 -type alias: allows you to create a new name for a type and create your own reusable alias.
 -void - Represents the absence of a type. It's typically used for functions that don't return anything. don't have a return statement
--undefined
+-unknown - is meant to describe the type of variables that we might not know when we're writing an application. It's like the any type in that any value is assignable to it. However, you can't perform any operations on values of type unknown without first asserting or narrowing them to a more specific type. It's a more type-safe counterpart to the any type.
+-never -  represents a value that never occurs. It is a powerful tool for ensuring type safety in certain scenarios. It's particularly valuable for exhaustive type checking and making sure certain code paths are not taken.
+
+
 */
 
 function add(n1: number, n2: number) {
@@ -311,7 +317,7 @@ function add4(n1: number, n2: number): number {
   return n1 + n2;
 }
 
-//Void return type. You don't need to specify it and leave it to TS inference. That function doesn't have return. It returns nothing (It does because it returns undefined),
+//Void return type. You don't need to specify it and leave it to TS inference. That function doesn't have return statement. It returns nothing (It does because it returns undefined). It doesn't force you to return anything if you don't want to return something
 function printResult(num: number): void {
   console.log("Result: " + num);
 }
@@ -329,97 +335,125 @@ function printResult2(num: number): undefined {
   return;
 }
 
-// let age: number = 29;
-// age = 30;
+//-------------------------------
+//27. Functions as Types
 
-// let ageAsString: string = "twenty two";
-// ageAsString = "ten";
-// ageAsString = `${age}`;
+let combineValues: Function;
 
-// console.log(ageAsString);
+combineValues = add3;
+combineValues = printResult; //It won't be an error but it will return undefined. This function is not taking that arguments
+// combineValues = 5; //Error because it's not function
+console.log(combineValues(5, 12));
 
-// //Functions
+let combineValues1: (a: number, b: number) => number;
+combineValues1 = add3;
+// combineValues1 = printResult; //Error because printResult function don't match the function type of combineValues1
+console.log(combineValues1(5, 12));
 
-// const add1 = (v1: number, v2: number) => {
-//   return v1 + v2;
-// };
+//-------------------------------
+//28. Function Types & Callbacks
 
-// console.log(add(24, 50));
+function addAndHandle(n1: number, n2: number, cb: (num: number) => void) {
+  const result = n1 + n2;
+  cb(result);
+}
 
-// //Practice
-// const input1Element: HTMLInputElement = document.querySelector("#input1");
-// const input2Element: HTMLInputElement = document.querySelector("#input2");
-// const addbuttonElement: HTMLButtonElement =
-//   document.querySelector("#addButton");
+addAndHandle(2, 3, printResult);
+addAndHandle(2, 3, (result) => {
+  console.log(result);
+  return result; //By specifying void returned result we are saying that we are ignoring all any result might be returning.
+});
 
-// addbuttonElement.addEventListener("click", () => {
-//   const sum = add(Number(input1Element.value), Number(input2Element.value));
-//   console.log(sum);
-// });
+//-------------------------------
+//29. The "unknown" Type
+let userInput: unknown;
+let userName: string;
 
-// //Type inference
-// let age1 = 29;
+if (typeof userInput === "string") {
+  userName = userInput;
+}
+userInput = userName;
+userInput = 5;
+userInput = "Max";
 
-// const divide = (v1: number, v2: number) => v1 / v2;
-// divide(2, 2);
+//-------------------------------
+//30. The "never" Type
 
-// //Literal type
-// const age2 = 29;
+//This function doesn't return anything, even undefined because it throws an error. Another example is a function with infinit loop that returns nothing.
+function generateError(message: string, code: number): never {
+  throw { message: message, errorCode: code };
+}
 
-// //union types
-// const logAge = (age: number | string) => {
-//   console.log(`Hej mam ${age} lat!`);
-// };
+// const errorMessage = generateError("An error occured!", 500);
 
-// logAge(28);
-// logAge("dwadzieścia osiem");
+//Practice
+const input1Element: HTMLInputElement = document.querySelector("#input1");
+const input2Element: HTMLInputElement = document.querySelector("#input2");
+const addbuttonElement: HTMLButtonElement =
+  document.querySelector("#addButton");
 
-// let test: string | number | boolean;
-// test = "test";
-// test = 21;
-// test = true;
+addbuttonElement.addEventListener("click", () => {
+  const sum = add(Number(input1Element.value), Number(input2Element.value));
+  console.log(sum);
+});
 
-// //Boolean practice
-// const buyButtonElement: HTMLButtonElement =
-//   document.querySelector("#buyButton");
+let test: string | number | boolean;
+test = "test";
+test = 21;
+test = true;
 
-// const calculatePrice = (
-//   originalPrice: number,
-//   hasDiscount: boolean = false
-// ) => {
-//   return hasDiscount ? originalPrice * 0.8 : originalPrice;
-// };
+//Boolean practice
+const buyButtonElement: HTMLButtonElement =
+  document.querySelector("#buyButton");
 
-// buyButtonElement.addEventListener("click", () => {
-//   const originalPrice: number = 50;
-//   const hasDiscount: boolean = Boolean(
-//     new URLSearchParams(window.location.search).get("discount")
-//   );
-//   console.log(calculatePrice(originalPrice, hasDiscount));
-// });
+const calculatePrice = (
+  originalPrice: number,
+  hasDiscount: boolean = false
+) => {
+  return hasDiscount ? originalPrice * 0.8 : originalPrice;
+};
 
-// // Array
+buyButtonElement.addEventListener("click", () => {
+  const originalPrice: number = 50;
+  const hasDiscount: boolean = Boolean(
+    new URLSearchParams(window.location.search).get("discount")
+  );
+  console.log(calculatePrice(originalPrice, hasDiscount));
+});
 
-// // <li>
-// //   <label for="task-1">Wyrzucić śmieci</label>
-// //   <input type="checkbox" id="task-1" name="" />
-// // </li>;
+// Array
 
-// const nameElement: HTMLInputElement = document.querySelector("#name");
-// const addTaskButton: HTMLButtonElement =
-//   document.querySelector("#addTaskButton");
-// const tasksList: HTMLUListElement = document.querySelector(".tasks");
+// <li>
+//   <label for="task-1">Wyrzucić śmieci</label>
+//   <input type="checkbox" id="task-1" name="" />
+// </li>;
 
-// const tasks: string[] = ["Wyrzucić śmieci", "Pójśc na siłkę", "Nakarmić koty"];
+const nameElement: HTMLInputElement = document.querySelector("#name");
+const addTaskButton: HTMLButtonElement =
+  document.querySelector("#addTaskButton");
+const tasksList: HTMLElement = document.querySelector(".tasks");
 
-// const render = () => {
-//   tasks.forEach((task, index) => {
-//     const taskElement: HTMLElement = document.createElement("li");
-//     taskElement.innerText = task;
-//     tasksList.appendChild(taskElement);
-//   });
-// };
+const tasks: string[] = ["Wyrzucić śmieci", "Pójśc na siłkę", "Nakarmić koty"];
 
-// const addTask = (task: string) => {};
+const render = () => {
+  tasksList.innerHTML = "";
+  tasks.forEach((task, index) => {
+    const taskElement: HTMLElement = document.createElement("li");
+    taskElement.innerText = task;
+    tasksList.appendChild(taskElement);
+  });
+};
 
-// render();
+const addTask = (task: string) => {
+  tasks.push(task);
+};
+
+addTaskButton.addEventListener("click", (e) => {
+  e.preventDefault();
+  const task = nameElement.value;
+  console.log(task);
+  addTask(task);
+  render();
+});
+
+render();
