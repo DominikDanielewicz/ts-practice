@@ -33,9 +33,9 @@ Added by TypeScript:
 function add(n1, n2) {
     return n1 + n2;
 }
-var number1 = 5;
-var number2 = 2.8;
-var result = add(number1, number2);
+const number1 = 5;
+const number2 = 2.8;
+const result = add(number1, number2);
 console.log(result);
 //TypeScript system only helps during development before compilation
 // JavaScript uses "dynamic types" resolved at runtime, TypeScript uses "static types" set during development
@@ -51,28 +51,28 @@ function multiply(n1, n2) {
 console.log(multiply(8, 8));
 //--------------------------------------------
 //14. Working with Numbers, Strings & Booleans
-var substract = function (n1, n2, showResults, phrase) {
+const substract = (n1, n2, showResults, phrase) => {
     if (showResults) {
-        console.log("".concat(phrase).concat(n1 - n2));
+        console.log(`${phrase}${n1 - n2}`);
     }
     return n1 - n2;
 };
 substract(2, 1, true, "Result is: ");
 //------------------------------------
 //15. Type Assignment & Type Inference
-var variable;
+let variable;
 variable = 8;
-var variable1 = 10; //Bad practice because of type inference
-var variable2 = 10; //Good practice
+const variable1 = 10; //Bad practice because of type inference
+const variable2 = 10; //Good practice
 //----------------
 //16. Object Types
 //It is possible to do something like this but...
-var person = {
+const person = {
     name: "Gorge",
     age: 30,
 };
 //...it's better to let TypeScript infere types on his own
-var person1 = {
+const person1 = {
     name: "Gorge",
     age: 30,
 };
@@ -81,7 +81,7 @@ console.log(person1.name);
 //17. Nested Objects & Types
 //Of course object types can also be created for nested objects.
 //JavaScript object:
-var product = {
+const product = {
     id: "abc1",
     price: 12.99,
     tags: ["great-offer", "hot-and-new"],
@@ -103,24 +103,23 @@ var product = {
 //So you have an object type in an object type so to say.
 //----------------
 //18. Arrays Types
-var person2 = {
+const person2 = {
     name: "Gorge",
     age: 30,
     hobbies: ["Sports", "Cooking"],
 };
-var favoriteActivities;
+let favoriteActivities;
 //favoriteActivities = ["Sports", 1]; //error
 //favoriteActivities = "Sports"; //error
 favoriteActivities = ["Sports", "Cooking"]; //good
 console.log(person2.name);
-for (var _i = 0, _a = person2.hobbies; _i < _a.length; _i++) {
-    var hobby = _a[_i];
+for (const hobby of person2.hobbies) {
     console.log(hobby.toUpperCase());
     //console.log(hobby.map()); //error TypeScript give you better hints what method you can use on the variable because of type inference
 }
 //----------------
 //19. Working with Tuples
-var person3 = {
+const person3 = {
     name: "Gorge",
     age: 30,
     hobbies: ["Sports", "Cooking"],
@@ -137,7 +136,7 @@ var Role;
     Role[Role["READ_ONLY"] = 1] = "READ_ONLY";
     Role[Role["AUTHOR"] = 2] = "AUTHOR";
 })(Role || (Role = {}));
-var person4 = {
+const person4 = {
     name: "Gorge",
     age: 30,
     hobbies: ["Sports", "Cooking"],
@@ -151,16 +150,16 @@ else {
 }
 //----------------------
 //21. The "any" Type
-var books;
+let books;
 books = ["Casino Royale", "Good Omens", 9];
 //----------------------
 //22. Union Types
-var logYourAge = function (age) {
-    console.log("Hej mam ".concat(age, " lat!"));
+const logYourAge = (age) => {
+    console.log(`Hej mam ${age} lat!`);
 };
 logYourAge(28);
 logYourAge("dwadzieścia osiem");
-var testing;
+let testing;
 testing = "test";
 testing = 21;
 testing = true;
@@ -171,7 +170,7 @@ function combine(input1, input2) {
 }
 //Correct example
 function combine1(input1, input2) {
-    var combineResult;
+    let combineResult;
     if (typeof input1 === "number" && typeof input2 === "number") {
         combineResult = input1 + input2;
     }
@@ -185,7 +184,7 @@ function combine1(input1, input2) {
 function combineConvert(input1, input2, 
 //   resultConversion: string
 resultConversion) {
-    var combineResult;
+    let combineResult;
     if ((typeof input1 === "number" && typeof input2 === "number") ||
         resultConversion === "as-number") {
         combineResult = Number(input1) + Number(input2);
@@ -204,7 +203,7 @@ console.log(combineConvert(30, 26, "as-number"));
 console.log(combineConvert(30, 26, "as-text"));
 console.log(combineConvert("30", "26", "as-text"));
 function combine2(input1, input2) {
-    var combineResult;
+    let combineResult;
     if (typeof input1 === "number" && typeof input2 === "number") {
         combineResult = input1 + input2;
     }
@@ -213,7 +212,7 @@ function combine2(input1, input2) {
     }
     return combineResult;
 }
-var u1 = { name: "Max", age: 30 }; // this works!
+const u1 = { name: "Max", age: 30 }; // this works!
 //This allows you to avoid unnecessary repetition and manage types centrally.
 //For example, you can simplify this code:
 function greet1(user) {
@@ -254,30 +253,30 @@ function printResult2(num) {
 }
 //-------------------------------
 //27. Functions as Types
-var combineValues;
+let combineValues;
 combineValues = add3;
 combineValues = printResult; //It won't be an error but it will return undefined. This function is not taking that arguments
 // combineValues = 5; //Error because it's not function
 console.log(combineValues(5, 12));
-var combineValues1;
+let combineValues1;
 combineValues1 = add3;
 // combineValues1 = printResult; //Error because printResult function don't match the function type of combineValues1
 console.log(combineValues1(5, 12));
 //-------------------------------
 //28. Function Types & Callbacks
 function addAndHandle(n1, n2, cb) {
-    var result = n1 + n2;
+    const result = n1 + n2;
     cb(result);
 }
 addAndHandle(2, 3, printResult);
-addAndHandle(2, 3, function (result) {
+addAndHandle(2, 3, (result) => {
     console.log(result);
     return result; //By specifying void returned result we are saying that we are ignoring all any result might be returning.
 });
 //-------------------------------
 //29. The "unknown" Type
-var userInput;
-var userName;
+let userInput;
+let userName;
 if (typeof userInput === "string") {
     userName = userInput;
 }
@@ -292,26 +291,25 @@ function generateError(message, code) {
 }
 // const errorMessage = generateError("An error occured!", 500);
 //Practice
-var input1Element = document.querySelector("#input1");
-var input2Element = document.querySelector("#input2");
-var addbuttonElement = document.querySelector("#addButton");
-addbuttonElement.addEventListener("click", function () {
-    var sum = add(Number(input1Element.value), Number(input2Element.value));
+const input1Element = document.querySelector("#input1");
+const input2Element = document.querySelector("#input2");
+const addbuttonElement = document.querySelector("#addButton");
+addbuttonElement.addEventListener("click", () => {
+    const sum = add(Number(input1Element.value), Number(input2Element.value));
     console.log(sum);
 });
-var test;
+let test;
 test = "test";
 test = 21;
 test = true;
 //Boolean practice
-var buyButtonElement = document.querySelector("#buyButton");
-var calculatePrice = function (originalPrice, hasDiscount) {
-    if (hasDiscount === void 0) { hasDiscount = false; }
+const buyButtonElement = document.querySelector("#buyButton");
+const calculatePrice = (originalPrice, hasDiscount = false) => {
     return hasDiscount ? originalPrice * 0.8 : originalPrice;
 };
-buyButtonElement.addEventListener("click", function () {
-    var originalPrice = 50;
-    var hasDiscount = Boolean(new URLSearchParams(window.location.search).get("discount"));
+buyButtonElement.addEventListener("click", () => {
+    const originalPrice = 50;
+    const hasDiscount = Boolean(new URLSearchParams(window.location.search).get("discount"));
     console.log(calculatePrice(originalPrice, hasDiscount));
 });
 // Array
@@ -319,24 +317,24 @@ buyButtonElement.addEventListener("click", function () {
 //   <label for="task-1">Wyrzucić śmieci</label>
 //   <input type="checkbox" id="task-1" name="" />
 // </li>;
-var nameElement = document.querySelector("#name");
-var addTaskButton = document.querySelector("#addTaskButton");
-var tasksList = document.querySelector(".tasks");
-var tasks = ["Wyrzucić śmieci", "Pójśc na siłkę", "Nakarmić koty"];
-var render = function () {
+const nameElement = document.querySelector("#name");
+const addTaskButton = document.querySelector("#addTaskButton");
+const tasksList = document.querySelector(".tasks");
+const tasks = ["Wyrzucić śmieci", "Pójśc na siłkę", "Nakarmić koty"];
+const render = () => {
     tasksList.innerHTML = "";
-    tasks.forEach(function (task, index) {
-        var taskElement = document.createElement("li");
+    tasks.forEach((task, index) => {
+        const taskElement = document.createElement("li");
         taskElement.innerText = task;
         tasksList.appendChild(taskElement);
     });
 };
-var addTask = function (task) {
+const addTask = (task) => {
     tasks.push(task);
 };
-addTaskButton.addEventListener("click", function (e) {
+addTaskButton.addEventListener("click", (e) => {
     e.preventDefault();
-    var task = nameElement.value;
+    const task = nameElement.value;
     console.log(task);
     addTask(task);
     render();
