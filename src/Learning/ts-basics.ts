@@ -49,14 +49,14 @@ console.log(result);
 
 //Possible non TypeScript option to validate the inputs
 
-function multiply(n1, n2) {
-  if (typeof n1 !== "number" || typeof n2 !== "number") {
-    throw new Error("Incorrect input!");
-  }
-  return n1 * n2;
-}
+// function multiply(n1, n2) {
+//   if (typeof n1 !== "number" || typeof n2 !== "number") {
+//     throw new Error("Incorrect input!");
+//   }
+//   return n1 * n2;
+// }
 
-console.log(multiply(8, 8));
+// console.log(multiply(8, 8));
 
 //--------------------------------------------
 //14. Working with Numbers, Strings & Booleans
@@ -166,7 +166,7 @@ const person3: {
 };
 
 person3.role.push("admin"); //Typescript can't protect us from pushing a new value to the tuple (the aaray with fixed length)
-person3.role.push[1] = 10;
+// person3.role.push[1] = 10;
 
 //----------------------
 //20. Working with Enums
@@ -372,7 +372,7 @@ let userName: string;
 if (typeof userInput === "string") {
   userName = userInput;
 }
-userInput = userName;
+// userInput = userName;
 userInput = 5;
 userInput = "Max";
 
@@ -387,10 +387,16 @@ function generateError(message: string, code: number): never {
 // const errorMessage = generateError("An error occured!", 500);
 
 //Practice
-const input1Element: HTMLInputElement = document.querySelector("#input1");
-const input2Element: HTMLInputElement = document.querySelector("#input2");
-const addbuttonElement: HTMLButtonElement =
-  document.querySelector("#addButton");
+const input1Element: HTMLInputElement = document.querySelector(
+  "#input1"
+) as HTMLInputElement;
+const input2Element: HTMLInputElement = document.querySelector(
+  "#input2"
+) as HTMLInputElement;
+const addbuttonElement: HTMLButtonElement = document.querySelector(
+  "#addButton"
+) as HTMLButtonElement;
+//Using a type assertion to solve the problem "Type 'HTMLElement or null' is not assignable to type in TS"
 
 addbuttonElement.addEventListener("click", () => {
   const sum = add(Number(input1Element.value), Number(input2Element.value));
@@ -403,8 +409,10 @@ test = 21;
 test = true;
 
 //Boolean practice
-const buyButtonElement: HTMLButtonElement =
-  document.querySelector("#buyButton");
+const buyButtonElement: HTMLButtonElement = document.querySelector(
+  "#buyButton"
+) as HTMLButtonElement;
+//Using a type assertion to solve the problem "Type 'HTMLElement or null' is not assignable to type in TS"
 
 const calculatePrice = (
   originalPrice: number,
@@ -428,10 +436,11 @@ buyButtonElement.addEventListener("click", () => {
 //   <input type="checkbox" id="task-1" name="" />
 // </li>;
 
-const nameElement: HTMLInputElement = document.querySelector("#name");
+const nameElement: HTMLInputElement = document.querySelector("#name")!;
 const addTaskButton: HTMLButtonElement =
-  document.querySelector("#addTaskButton");
-const tasksList: HTMLElement = document.querySelector(".tasks");
+  document.querySelector("#addTaskButton")!;
+const tasksList: HTMLElement = document.querySelector(".tasks")!;
+//Using the non-null assertion operator to solve the problem "Type 'HTMLElement or null' is not assignable to type in TS"
 
 const tasks: string[] = ["Wyrzucić śmieci", "Pójśc na siłkę", "Nakarmić koty"];
 
