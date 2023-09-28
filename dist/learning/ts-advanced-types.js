@@ -6,7 +6,7 @@ const e1 = {
 };
 function addNumbers1(a, b) {
     if (typeof a === "string" || typeof b === "string") {
-        return Number(a) + Number(b);
+        return a.toString() + b.toString();
     }
     return a + b;
 }
@@ -57,3 +57,32 @@ function moveAnimal(animal) {
     console.log("Moving at speed " + speed);
 }
 moveAnimal({ type: "bird", flyingSpeed: 100 });
+const paragraph = document.querySelector("p");
+const paragraphById = document.querySelector("#message-output");
+const paragraphById1 = document.getElementById("message-output");
+const nameInputElement = document.querySelector("#input-name");
+const nameInputElement1 = (document.querySelector("#input-name"));
+const nameInputElement2 = document.querySelector("#input-name");
+const nameInputElementValue2 = nameInputElement2.value;
+const nameInputElement3 = document.querySelector("#input-name");
+if (nameInputElement3) {
+    nameInputElement3.value = "Hi there";
+}
+const errorBag = {
+    email: "Not a valid email",
+    username: "Must start with a character!",
+};
+function addNumbers2(a, b) {
+    if (typeof a === "string" || typeof b === "string") {
+        return a.toString() + b.toString();
+    }
+    return a + b;
+}
+const addingResult = addNumbers2("Max", "Dom");
+const fetchedUserData = {
+    id: "u1",
+    name: "Max",
+};
+const adminInput = "";
+const storedData = adminInput !== null && adminInput !== void 0 ? adminInput : "DEFAULT";
+console.log(storedData);
