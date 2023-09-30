@@ -45,3 +45,60 @@ Person2 = __decorate([
 ], Person2);
 const newPerson2 = new Person2();
 console.log(newPerson2);
+function WithTemplate(template, hookId) {
+    return function (constructor) {
+        const hookEl = document.getElementById(hookId);
+        const p = new constructor();
+        if (hookEl) {
+            hookEl.innerHTML = template;
+            hookEl.querySelector("h1").textContent = p.name;
+        }
+    };
+}
+let Person3 = class Person3 {
+    constructor() {
+        this.name = "Max";
+        console.log("Creating person object...");
+    }
+};
+Person3 = __decorate([
+    WithTemplate("<h1>My Person Object</h1>", "app")
+], Person3);
+let Person4 = class Person4 {
+    constructor() {
+        this.name = "Max";
+        console.log("Creating person object...");
+    }
+};
+Person4 = __decorate([
+    Logger,
+    LoggerFactory("LOGGING - PERSON"),
+    WithTemplate("<h1>My Person Object</h1>", "app")
+], Person4);
+function Log(target, propertyName) {
+    console.log("Property decorator!");
+    console.log(target, propertyName);
+}
+class Product {
+    set price(val) {
+        if (val > 0)
+            this._price = val;
+    }
+    get price() {
+        return this._price;
+    }
+    constructor(title, price) {
+        this.title = title;
+        this._price = price;
+    }
+    getPriceWithTax(tax) {
+        console.log(this._price * (1 + tax));
+        return this._price * (1 + tax);
+    }
+}
+__decorate([
+    Log
+], Product.prototype, "title", void 0);
+__decorate([
+    Log
+], Product.prototype, "_price", void 0);

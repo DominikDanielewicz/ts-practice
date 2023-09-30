@@ -55,3 +55,82 @@ class Person2 {
 
 const newPerson2 = new Person2();
 console.log(newPerson2);
+
+//-----------------------------
+//107. Building More Useful Decorators
+
+function WithTemplate(template: string, hookId: string) {
+  return function (constructor: any) {
+    //To tell TypeScript that we are not interested in using this argument use _
+    const hookEl = document.getElementById(hookId);
+    const p = new constructor();
+    if (hookEl) {
+      hookEl.innerHTML = template;
+      hookEl.querySelector("h1")!.textContent = p.name;
+    }
+  };
+}
+
+@WithTemplate("<h1>My Person Object</h1>", "app")
+class Person3 {
+  name = "Max";
+
+  constructor() {
+    console.log("Creating person object...");
+  }
+}
+
+//-----------------------------
+//108. Adding Multiple Decorators
+//You can add more then one decorator to the class
+//The decorators (decorator functions) execute from the bottom to the top, so first is WithTemplate last will be Logger. The decorator factories run earlier
+@Logger
+@LoggerFactory("LOGGING - PERSON")
+@WithTemplate("<h1>My Person Object</h1>", "app")
+class Person4 {
+  name = "Max";
+
+  constructor() {
+    console.log("Creating person object...");
+  }
+}
+
+//-----------------------------
+//109. Diving into Property Decorators
+
+//Which arguments that decorator gets depends on where we want to use it
+function Log(target: any, propertyName: string | Symbol) {
+  console.log("Property decorator!");
+  console.log(target, propertyName);
+}
+
+class Product {
+  //We can add a decorator to the property. In that case decorator receives two arguments. Logger is executed when a class definition is registered by JS
+  @Log
+  title: string;
+  @Log
+  private _price: number;
+
+  set price(val: number) {
+    if (val > 0) this._price = val;
+  }
+
+  get price() {
+    return this._price;
+  }
+  constructor(title: string, price: number) {
+    this.title = title;
+    this._price = price;
+  }
+
+  getPriceWithTax(tax: number) {
+    console.log(this._price * (1 + tax));
+    return this._price * (1 + tax);
+  }
+}
+
+//-----------------------------
+//110. Accessor & Parameter Decorators
+
+//-----------------------------
+//111. When Do Decorators Execute?
