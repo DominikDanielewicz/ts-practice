@@ -100,17 +100,38 @@ class Person4 {
 
 //Which arguments that decorator gets depends on where we want to use it
 function Log(target: any, propertyName: string | Symbol) {
-  console.log("Property decorator!");
+  console.log("Property decorator!!!");
   console.log(target, propertyName);
 }
 
+function Log2(target: any, name: string, descriptor: PropertyDescriptor) {
+  console.log("Accessor decorator!!!");
+  console.log({ target, name, descriptor });
+}
+
+function Log3(
+  target: any,
+  name: string | Symbol,
+  descriptor: PropertyDescriptor
+) {
+  console.log("Method decorator!!!");
+  console.log({ target, name, descriptor });
+}
+
+function Log4(target: any, name: string | Symbol, position: number) {
+  console.log("Parameter decorator!!!");
+  console.log({ target, name, position });
+}
+
 class Product {
-  //We can add a decorator to the property. In that case decorator receives two arguments. Logger is executed when a class definition is registered by JS
+  //We can add a decorator to the property. In that case decorator receives 2 arguments. Logger is executed when a class definition is registered by JS
   @Log
   title: string;
   @Log
   private _price: number;
 
+  //You can also add decorator to accessors. Decorator in that case receives 3 arguments
+  @Log2
   set price(val: number) {
     if (val > 0) this._price = val;
   }
@@ -123,14 +144,52 @@ class Product {
     this._price = price;
   }
 
-  getPriceWithTax(tax: number) {
+  //You can also add decorator to methods. Receives 3 arguments
+  @Log3
+  //You can also add decorator to parameter. Receives 3 arguments. target, name - name of the method in which we used that parameter, position - position of the argument
+  getPriceWithTax(@Log4 tax: number) {
     console.log(this._price * (1 + tax));
     return this._price * (1 + tax);
   }
 }
 
 //-----------------------------
-//110. Accessor & Parameter Decorators
+//111. When Do Decorators Execute?
+
+//Decorators execute when you defined this class. Instanciating the objects doesn't matter. It won't execute again when you call a method or work with a property. Decorators add extra functionality behind the scenes
 
 //-----------------------------
-//111. When Do Decorators Execute?
+//112. Returning (and changing) a Class in a Class Decorator
+
+//Some decorators, for example class and method decorators are capable of returning something
+
+function WithTemplate1(template: string, hookId: string) {
+  return function <T extends { new (...args: any[]): { name: string } }>(
+    originalConstructor: T
+  ) {
+    //We can return a constructor function which is based on the original constructor function so to keep the properties (We don't need to do it but we will do in this example)
+
+    //We are replacing a class (the constructor function) to which we add the decorator with a new class (new constructor function) where I still execute the old logic with some new logic. And now the template should actualy only be rendered to the DOM if I really instanciate my object here na dnot as soon as we define the class.
+    return class extends originalConstructor {
+      constructor(..._: any[]) {
+        super();
+        const hookEl = document.getElementById(hookId);
+        if (hookEl) {
+          hookEl.innerHTML = template;
+          hookEl.querySelector("h1")!.textContent = this.name;
+        }
+      }
+    };
+  };
+}
+
+@WithTemplate1("<h1>My Person Object</h1>", "app")
+class Person5 {
+  name = "Max";
+
+  constructor() {
+    console.log("Creating person object...");
+  }
+}
+
+const NewestPerson = new Person5();

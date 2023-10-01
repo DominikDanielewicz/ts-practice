@@ -5,6 +5,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 class Person {
     constructor() {
         this.name = "Max";
@@ -76,8 +79,20 @@ Person4 = __decorate([
     WithTemplate("<h1>My Person Object</h1>", "app")
 ], Person4);
 function Log(target, propertyName) {
-    console.log("Property decorator!");
+    console.log("Property decorator!!!");
     console.log(target, propertyName);
+}
+function Log2(target, name, descriptor) {
+    console.log("Accessor decorator!!!");
+    console.log({ target, name, descriptor });
+}
+function Log3(target, name, descriptor) {
+    console.log("Method decorator!!!");
+    console.log({ target, name, descriptor });
+}
+function Log4(target, name, position) {
+    console.log("Parameter decorator!!!");
+    console.log({ target, name, position });
 }
 class Product {
     set price(val) {
@@ -102,3 +117,34 @@ __decorate([
 __decorate([
     Log
 ], Product.prototype, "_price", void 0);
+__decorate([
+    Log2
+], Product.prototype, "price", null);
+__decorate([
+    Log3,
+    __param(0, Log4)
+], Product.prototype, "getPriceWithTax", null);
+function WithTemplate1(template, hookId) {
+    return function (originalConstructor) {
+        return class extends originalConstructor {
+            constructor(..._) {
+                super();
+                const hookEl = document.getElementById(hookId);
+                if (hookEl) {
+                    hookEl.innerHTML = template;
+                    hookEl.querySelector("h1").textContent = this.name;
+                }
+            }
+        };
+    };
+}
+let Person5 = class Person5 {
+    constructor() {
+        this.name = "Max";
+        console.log("Creating person object...");
+    }
+};
+Person5 = __decorate([
+    WithTemplate1("<h1>My Person Object</h1>", "app")
+], Person5);
+const NewestPerson = new Person5();
