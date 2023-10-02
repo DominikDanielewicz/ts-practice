@@ -193,3 +193,135 @@ class Person5 {
 }
 
 const NewestPerson = new Person5();
+
+//-----------------------------
+//113. Other Decorator Return Types
+
+//Decorators that you can return something are the decorators added to methods and accessors. You can return brand new property descriptor. Descriptors exist in JavaScript
+
+//Decorators on properties and parameters can return something but TypeScript will ignore it. Returned values are not supported there.
+
+//-----------------------------
+//114. Example: Creating an "Autobind" Decorator
+
+//Decorator that will set this context to the object this method belongs to in the end
+function Autobind(_: any, __: string, descriptor: PropertyDescriptor) {
+  const originalMethod = descriptor.value;
+  const adjustedDescriptor: PropertyDescriptor = {
+    configurable: true,
+    enumerable: false,
+    //The getter method will be triggered by the concrete object to which it belongs, so this inside the getter method will always refer to the object on which we define the getter. It won't be overwritten by for example eventListener
+    get() {
+      const boundFn = originalMethod.bind(this);
+      return boundFn;
+    },
+  };
+  //So this decorator function Aurobind returning the new descriptor object and this object will overwrite the old descriptor, TypeScript will replace old descriptor configuration with new configuration.
+  return adjustedDescriptor;
+}
+
+class Printer {
+  message = "This works!";
+
+  @Autobind
+  showMessage() {
+    console.log(this.message);
+  }
+}
+
+const p = new Printer();
+
+const button = document.querySelector("#clicker")!;
+//Without Autobind in the eventListener, this will point to the button
+// button.addEventListener("click", p.showMessage.bind(p));
+
+//With Autobind decorator, this will point to the object
+button.addEventListener("click", p.showMessage);
+
+//-----------------------------
+//115. Validation with Decorators - First Steps
+
+interface ValidatorConfig {
+  [property: string]: {
+    [validatableProp: string]: string[]; // ["required", "positive"];
+  };
+}
+
+const registeredValidators: ValidatorConfig = {};
+
+function Required(target: any, propName: string) {
+  registeredValidators[target.constructor.name] = {
+    ...registeredValidators[target.constructor.name],
+    [propName]: [
+      ...(registeredValidators[target.constructor.name]?.[propName] ?? []),
+      "required",
+    ],
+  };
+}
+
+function PositiveNumber(target: any, propName: string) {
+  registeredValidators[target.constructor.name] = {
+    ...registeredValidators[target.constructor.name],
+    [propName]: [
+      ...(registeredValidators[target.constructor.name]?.[propName] ?? []),
+      "positive",
+    ],
+  };
+}
+
+function validate(obj: any) {
+  const objValidatorConfig = registeredValidators[obj.constructor.name];
+  if (!objValidatorConfig) {
+    return true;
+  }
+  let isValid = true;
+  for (const prop in objValidatorConfig) {
+    for (const validator of objValidatorConfig[prop]) {
+      switch (validator) {
+        case "required":
+          isValid = isValid && !!obj[prop];
+          break;
+        case "positive":
+          isValid = isValid && obj[prop] > 0;
+          break;
+      }
+    }
+  }
+  return isValid;
+}
+
+class Course {
+  @Required
+  title: string;
+  @PositiveNumber
+  price: number;
+
+  constructor(t: string, p: number) {
+    this.title = t;
+    this.price = p;
+  }
+}
+
+const courseForm = document.querySelector("#form")!;
+courseForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const titleInput: HTMLInputElement = document.querySelector("#title")!;
+  const priceInput: HTMLInputElement = document.querySelector("#price")!;
+
+  const title = titleInput.value;
+  const price = Number(priceInput.value);
+
+  const createdCourse = new Course(title, price);
+
+  if (!validate(createdCourse)) {
+    alert("Invalid input, please try again!");
+    return;
+  }
+
+  console.log(createdCourse);
+});
+
+//-----------------------------
+//118. Wrap Up
+//https://www.npmjs.com/package/class-validator
+// Allows use of decorator and non-decorator based validation. Internally uses validator.js to perform validation. Class-validator works on both browser and node.js platforms.
